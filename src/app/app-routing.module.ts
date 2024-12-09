@@ -1,15 +1,32 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { Error404PageComponent } from './shared/pages/error404-page/error404-page.component';
+// import { AuthGuard } from './auth/guards/auth.guard';
+// import { canActivatePublicGuard, canMatchPublicGuard } from './auth/guards/public.guard';
+import { PublicGuard } from './auth/guards/public.guard';
+import { canActivateGuard, canMatchGuard } from './auth/guards/auth.guard';
 
 const routes: Routes = [
   {
     path: 'auth',
     loadChildren: () => import('./auth/auth.module').then( m => m.AuthModule ),
+
+    canActivate: [PublicGuard],
+    canMatch: [PublicGuard]
+
+    // option with functional programming
+    // canActivate: [canActivatePublicGuard],
+    // canMatch: [canMatchPublicGuard],
   },
   {
     path: 'heroes',
     loadChildren: () => import('./heroes/heroes.module').then( m => m.HeroesModule ),
+    canActivate: [canActivateGuard],
+    canMatch: [canMatchGuard],
+
+    // option using a class
+    // canActivate: [AuthGuard],
+    // canMatch: [AuthGuard]
   },
   {
     path: '404',
@@ -18,7 +35,7 @@ const routes: Routes = [
   {
     path: '',
     redirectTo: 'heroes',
-    pathMatch: 'full'
+    pathMatch: 'full',
   },
   {
     path: '**',
